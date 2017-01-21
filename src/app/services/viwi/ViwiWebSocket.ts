@@ -10,7 +10,7 @@ export class ViwiWebSocket {
 
   private ws: WebSocket;
   private messages: BehaviorSubject<any>;
-  private connectPromise:Promise<WebSocket>;
+  private connectPromise: Promise<WebSocket>;
 
   constructor() {
     this.messages = new BehaviorSubject<any>({});
@@ -32,14 +32,18 @@ export class ViwiWebSocket {
         console.log("On Message", event);
       });
 
-    });
+      this.ws.addEventListener('error', (errorEvent) => {
+        console.log("On Message", event);
+        reject(event);
+      });
 
+    });
 
   }
 
 
   public subscribe(destination): Observable<any> {
-    this.connectPromise.then(()=>{
+    this.connectPromise.then(() => {
       this.ws.send(JSON.stringify({type: 'subscribe', event: destination}));
     });
     return this.messages.filter(x => x.event === destination);

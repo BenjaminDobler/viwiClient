@@ -21,18 +21,30 @@ export class ViwiEndpoint {
   private host:string = 'http://localhost:3000';
 
 
-  constructor(private destination:string, private http:Http, private ws:ViwiWebSocket, initialData:any={}) {
+  constructor(private destination:string, private http:Http, private ws:ViwiWebSocket, autoGetData:boolean = true, autoSubscribe:boolean = true) {
     this.data$ = new ReplaySubject<any>();
-    this.get();
-    this.subscribe();
     this.destination = this.destination;
     this.getDestinationParts();
+    if (autoGetData) {
+      this.get();
+    }
+    if(autoSubscribe) {
+      this.subscribe();
+    }
   }
 
   public get() {
     const request$ = this.http.get(`${this.host}${this.destination}`).map((resp:Response)=>resp.json().data).subscribe((data:any)=>{
       this.data$.next(data);
     });
+  }
+
+  public post(data:any) {
+    let body: string = JSON.stringify(data);
+    let headers:Headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    let options = new RequestOptions({ headers: headers });
+    this.http.post(`${this.host}${this.destination}`, body, options).subscribe();
   }
 
   public subscribe() {

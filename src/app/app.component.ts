@@ -1,7 +1,5 @@
-import { Component } from '@angular/core';
-import {Observable} from "rxjs";
-import {Http, Response, Headers, RequestOptions} from "@angular/http";
-import {map} from 'rxjs/operator/map';
+import {Component} from '@angular/core';
+import {Http} from "@angular/http";
 import 'rxjs/Rx';
 import {ViwiEndpoint} from "./services/viwi/ViwiEndpoint";
 import {Viwi} from "./services/viwi/Viwi";
@@ -13,37 +11,16 @@ import {Viwi} from "./services/viwi/Viwi";
 })
 export class AppComponent {
 
+  public renderersEndpoint: ViwiEndpoint;
 
-  public renderers:Observable<any>;
-  private ws:WebSocket;
-
-  public renderersEndpoint:ViwiEndpoint;
-  private rendererEndpoints:Array<ViwiEndpoint> = [];
-
-
-  constructor(public viwi:Viwi, public http:Http) {
-    this.renderersEndpoint = viwi.createEndpoint('/media/renderers/');
+  constructor(public viwi: Viwi, public http: Http) {
+    this.renderersEndpoint = this.viwi.createEndpoint('/media/renderers/');
   }
 
+  // @Note will not trigger subscription update cause it` not yet implemented server side!
+  toggleRendererState(renderer: any) {
+    this.viwi.createEndpoint(`/media/renderers/${renderer.id}`, false, false).post({state: (renderer.state != 'play') ? 'play' : 'pause'});
 
-  toggleRendererState(renderer:any) {
-
-    let data = Object.assign({}, renderer);
-    if (data.state === 'idle') {
-      data.state = 'play';
-    } else {
-      data.state = 'pause';
-    }
-
-    let body: string = JSON.stringify(data);
-    let headers:Headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: headers });
-    this.http.post(`http://localhost:3000/media/renderers/${renderer.id}`, body, options).subscribe();
-  }
-
-  subscribe(renderer) {
-    this.ws.send(JSON.stringify({type:'subscribe', event:`/media/renderers/${renderer.id}`}))
   }
 
 

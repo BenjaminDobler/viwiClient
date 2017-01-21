@@ -17,8 +17,8 @@ export class Viwi {
   }
 
 
-  public createEndpoint(target:string, initialData:any = {}):ViwiEndpoint {
-    const endpoint:ViwiEndpoint = new ViwiEndpoint(target, this.http, this.ws, initialData);
+  public createEndpoint(target:string, autoGetData:boolean=true, autoSubscribe:boolean=true):ViwiEndpoint {
+    const endpoint:ViwiEndpoint = new ViwiEndpoint(target, this.http, this.ws, autoGetData, autoSubscribe);
     return endpoint;
   }
 
