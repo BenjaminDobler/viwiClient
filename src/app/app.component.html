@@ -1,3 +1,6 @@
-<h1>
-  {{title}}
-</h1>
+<div *ngFor="let renderer of renderersEndpoint?.data$ | async">
+  {{renderer.name}}
+  <span (click)="toggleRendererState(renderer)">{{renderer.state}}</span>
+  <button (click)="subscribe(renderer)">Subscribe</button>
+  <button>Unsubscribe</button>
+</div>
