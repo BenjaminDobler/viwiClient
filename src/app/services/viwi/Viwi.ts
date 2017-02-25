@@ -11,17 +11,15 @@ import {Inject, Injectable} from "@angular/core";
 export class Viwi {
 
 
-
-  constructor(private http:Http, @Inject(ViwiWebSocket)private ws:ViwiWebSocket) {
+  constructor(private http: Http, @Inject(ViwiWebSocket) private ws: ViwiWebSocket) {
 
   }
 
 
-  public createEndpoint(target:string, autoGetData:boolean=true, autoSubscribe:boolean=true):ViwiEndpoint {
-    const endpoint:ViwiEndpoint = new ViwiEndpoint(target, this.http, this.ws, autoGetData, autoSubscribe);
+  public createEndpoint(target: string, autoGetData: boolean = true, autoSubscribe: boolean = true): ViwiEndpoint<any> {
+    const endpoint: ViwiEndpoint<any> = new ViwiEndpoint(target, this.http, this.ws, autoGetData, autoSubscribe);
     return endpoint;
   }
-
 
 
 }

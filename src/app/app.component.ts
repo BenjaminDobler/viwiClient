@@ -3,6 +3,7 @@ import {Http} from "@angular/http";
 import 'rxjs/Rx';
 import {ViwiEndpoint} from "./services/viwi/ViwiEndpoint";
 import {Viwi} from "./services/viwi/Viwi";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -11,17 +12,18 @@ import {Viwi} from "./services/viwi/Viwi";
 })
 export class AppComponent {
 
-  public renderersEndpoint: ViwiEndpoint;
+  public renderers: ViwiEndpoint<any>;
+  public players: any;
 
   constructor(public viwi: Viwi, public http: Http) {
-    this.renderersEndpoint = this.viwi.createEndpoint('/media/renderers/');
+    this.renderers = this.viwi.createEndpoint('/media/renderers/');
+    this.players = this.renderers.map((d: Array<any>) => {
+      return d.map((r: any) => {
+        return this.viwi.createEndpoint(`/media/renderers/${r.id}`);
+      });
+    });
+
+
   }
-
-  // @Note will not trigger subscription update cause it` not yet implemented server side!
-  toggleRendererState(renderer: any) {
-    this.viwi.createEndpoint(`/media/renderers/${renderer.id}`, false, false).post({state: (renderer.state != 'play') ? 'play' : 'pause'});
-
-  }
-
 
 }

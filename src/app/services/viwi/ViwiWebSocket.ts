@@ -30,6 +30,7 @@ export class ViwiWebSocket {
 
       this.ws.addEventListener('message', (event) => {
         console.log("On Message", event);
+        this.messages.next(JSON.parse(event.data).data);
       });
 
       this.ws.addEventListener('error', (errorEvent) => {
@@ -46,7 +47,13 @@ export class ViwiWebSocket {
     this.connectPromise.then(() => {
       this.ws.send(JSON.stringify({type: 'subscribe', event: destination}));
     });
-    return this.messages.filter(x => x.event === destination);
+    //return this.messages.filter(x => x.event === destination);
+    return this.messages.filter((message:any)=>{
+      if (!message) {
+        return false;
+      }
+      return message.uri === destination;
+    });
 
   }
 
