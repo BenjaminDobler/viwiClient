@@ -47,14 +47,7 @@ export class ViwiWebSocket {
     this.connectPromise.then(() => {
       this.ws.send(JSON.stringify({type: 'subscribe', event: destination}));
     });
-    //return this.messages.filter(x => x.event === destination);
-    return this.messages.filter((message:any)=>{
-      if (!message) {
-        return false;
-      }
-      return message.uri === destination;
-    });
-
+    return this.messages.filter(message => message && message.uri === destination);
   }
 
   public unsubscribe(destination) {
