@@ -2,10 +2,28 @@
 
 
 <div *ngFor="let p of players | async">
-  Player: {{(p | async)?.name}}<br>
-  State: {{(p | async)?.state}}<br>
-  Offset: {{(p | async)?.offset}}<br>
-  <button (click)="p.post({state:'play'})" >Play</button>
-  <button (click)="p.post({state:'paused'})" >Pause</button>
+  Player: {{p.data.name}}<br>
+  State: {{p.data.state}}<br>
+  Offset: {{p.data.offset}}<br>
+  <button (click)="p.updateElement({state:'play'})" >Play</button>
+  <button (click)="p.updateElement({state:'pause'})" >Pause</button>
+  <button (click)="p.updateElement({state:'stop'})" >Stop</button>
+</div>
+
+
+
+
+
+<div *ngFor="let mail of emails | async">
+  Name: {{mail.name}}<br>
+  Email: {{mail.emailaddress}}<br>
 
 </div>
+
+
+<div>
+  <label>Email</label><input #email type="email">
+  <label>Name</label><input #name type="text">
+</div>
+
+<button (click)="addEmail({emailaddress: email.value, name: name.value})">Add Renderer</button>

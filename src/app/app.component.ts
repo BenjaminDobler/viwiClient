@@ -15,6 +15,8 @@ export class AppComponent {
   public renderers: ViwiEndpoint<any>;
   public players: any;
 
+  public emails:ViwiEndpoint<any>;
+
   constructor(public viwi: Viwi, public http: Http) {
     this.renderers = this.viwi.createEndpoint('/media/renderers/');
     this.players = this.renderers.map((d: Array<any>) => {
@@ -23,7 +25,13 @@ export class AppComponent {
       });
     });
 
+    this.emails = this.viwi.createEndpoint('/addressbook/emails/');
 
   }
+
+  addEmail(newEmail:any) {
+    this.emails.createElement(newEmail);
+  }
+
 
 }

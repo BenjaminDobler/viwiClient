@@ -9,36 +9,31 @@ import {BehaviorSubject, ReplaySubject} from "rxjs";
 export class ViwiEndpoint<T> extends ReplaySubject<T> {
 
   public subscribed: boolean = false;
-  public serviceName: string;
-  public resourceName: string;
-  public resourceId: string;
-  private
-  URIREGEX = /^\/(\w+)\/(\w+)\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fAF]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})?#?\w*\??([\w$=&\(\)\:\,\;\-\+]*)?$/; //Group1: Servicename, Group2: Resourcename, Group3: element id, Group4: queryparameter list
+  public data: any = {};
 
 
-  private host: string = 'http://localhost:3000';
+  //private host: string = 'http://localhost:3000';
+  private host: string = 'http://0.0.0.0:1337/api/v1';
 
 
   constructor(private destination: string, private http: Http, private ws: ViwiWebSocket, autoGetData: boolean = true, autoSubscribe: boolean = true) {
     super();
     this.destination = this.destination;
-    this.getDestinationParts();
     if (autoGetData) {
-      this.get();
+      this.getElement();
     }
     if (autoSubscribe) {
       this.listen();
     }
+
+    this.subscribe(data => this.data = data);
   }
 
-  public get() {
-    const request$ = this.http.get(`${this.host}${this.destination}`).map((resp: Response) => resp.json().data).subscribe((data: any) => {
-      console.log('Next ', data)
-      this.next(data);
-    });
+  public getElement() {
+    this.http.get(`${this.host}${this.destination}`).map((resp: Response) => resp.json().data).subscribe(data => this.next(data));
   }
 
-  public post(data: any) {
+  public createElement(data: any) {
     let body: string = JSON.stringify(data);
     let headers: Headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -54,7 +49,7 @@ export class ViwiEndpoint<T> extends ReplaySubject<T> {
     this.ws.unsubscribe(this.destination);
   }
 
-  public update(data: any) {
+  public updateElement(data: any) {
     let body: string = JSON.stringify(data);
     let headers: Headers = new Headers();
     headers.append('Content-Type', 'application/json');
@@ -63,12 +58,6 @@ export class ViwiEndpoint<T> extends ReplaySubject<T> {
   }
 
 
-  getDestinationParts() {
-    const captureGroups = this.destination.match(this.URIREGEX);
-    this.serviceName = captureGroups[1];
-    this.resourceName = captureGroups[2];
-    this.resourceId = captureGroups[3];
-  }
 
 
 }
